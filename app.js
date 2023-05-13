@@ -1,52 +1,53 @@
-// Initialize empty array
 let library = []
-// Get the div where the library whill be printed
 let booksDiv = document.getElementById('books');
+const bookForm = document.getElementById('bookForm');
+bookForm.addEventListener('submit', addBook);
+
 
 // Define Book 
 class Book {
-  constructor(title, author, pages, read) {
-    this._title = title;
-    this._author = author;
-    this._pages = pages;
-    this._read = read;
-  }
+	constructor(title, author, pages, read) {
+		this._title = title;
+		this._author = author;
+		this._pages = pages;
+		this._read = read;
+	}
 
-  get title() {
-    return this._title;
-  }
+	get title() {
+		return this._title;
+	}
 
-  set title(newTitle) {
-    this._title = newTitle;
-  }
+	set title(newTitle) {
+		this._title = newTitle;
+	}
 
-  get author() {
-    return this._author;
-  }
+	get author() {
+		return this._author;
+	}
 
-  set author(newAuthor) {
-    this._author = newAuthor;
-  }
+	set author(newAuthor) {
+		this._author = newAuthor;
+	}
 
-  get pages() {
-    return this._pages;
-  }
+	get pages() {
+		return this._pages;
+	}
 
-  set pages(newPages) {
-    this._pages = newPages;
-  }
+	set pages(newPages) {
+		this._pages = newPages;
+	}
 
-  get read() {
-    return this._read;
-  }
+	get read() {
+		return this._read;
+	}
 
-  set read(newRead) {
-    this._read = newRead;
-  }
+	set read(newRead) {
+		this._read = newRead;
+	}
 
-  get info() {
-    return `Book title: ${this._title}, author: ${this._author}, Pages: ${this._pages}, Read: ${this._read ? 'Yes' : 'No'}`;
-  }
+	get info() {
+		return `Book title: ${this._title}, author: ${this._author}, Pages: ${this._pages}, Read: ${this._read ? 'Yes' : 'No'}`;
+	}
 }
 
 function addBook(event) {
@@ -70,15 +71,41 @@ function addBook(event) {
 	document.getElementById('pages').value = '';
 	document.getElementById('read').checked = false;
 
-	console.log('New book added:', newBook);
-	console.log('Updated library:', library);
-}
+	// Empty the div 
+	booksDiv.innerHTML = ""
 
-const bookForm = document.getElementById('bookForm');
-bookForm.addEventListener('submit', addBook);
-
-function displayLibrary() {
+	// Populate "books" div 
 	library.forEach((book, index) => {
-		console.log(book.info);
+		const bookInfo = document.createElement('p');
+		// delete and toggle buttons binded with the bookid data
+		bookInfo.innerHTML = `${book.info} | <button data-bookid="${index}">Delete</button> | <button data-bookid="${index}">Toggle Read Status</button>`;
+		booksDiv.appendChild(bookInfo);
 	});
+	
+	// Create buttons used for removing books from array
+	// and changing the read status 
+	const alterButtons = booksDiv.querySelectorAll('button[data-bookid]');
+	alterButtons.forEach((button) => {
+		button.addEventListener('click', (event) => {
+			const bookId = event.target.dataset.bookid;
+			if (button.textContent === 'Delete') {
+				deleteBook(bookId);
+				booksDiv.removeChild(event.target.parentElement);
+			} else if (button.textContent === 'Toggle Read Status') {
+				toggleReadStatus(bookId);
+				const bookInfo = event.target.parentElement;
+				const book = library[bookId];
+				bookInfo.innerHTML = `${book.info} | <button data-bookid="${bookId}">Delete</button> | <button data-bookid="${bookId}">Toggle Read Status</button>`;
+			}
+		});
+	});
+	
+	function deleteBook(index) {
+		library.splice(index, 1);
+	}
+
+	function toggleReadStatus(index) {
+		const book = library[index];
+		book.read = !book.read;
+	}
 }
