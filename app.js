@@ -81,7 +81,7 @@ function addBook(event) {
 		bookInfo.innerHTML = `${book.info} | <button data-bookid="${index}">Delete</button> | <button data-bookid="${index}">Toggle Read Status</button>`;
 		booksDiv.appendChild(bookInfo);
 	});
-	
+
 	// Create buttons used for removing books from array
 	// and changing the read status 
 	const alterButtons = booksDiv.querySelectorAll('button[data-bookid]');
@@ -99,7 +99,7 @@ function addBook(event) {
 			}
 		});
 	});
-	
+
 	function deleteBook(index) {
 		library.splice(index, 1);
 	}
